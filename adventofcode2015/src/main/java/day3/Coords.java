@@ -1,4 +1,4 @@
-package AdventOfCode2015.day3;
+package day3;
 
 public class Coords {
     int x;
