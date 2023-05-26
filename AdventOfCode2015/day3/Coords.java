@@ -34,6 +34,4 @@ public class Coords {
     public String toString() {
         return "Coords [x=" + x + ", y=" + y + "]";
     }
-
-    
 }
