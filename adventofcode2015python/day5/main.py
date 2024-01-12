@@ -37,8 +37,8 @@ def part2():
     print(sum(map(is_nice_string2, data)))
 
 
-# def part2():
-#     return sum(any(string[i] == string[i + 2] for i in range(len(string) - 2)) and
-#                any(string.count(string[i:i+2]) >= 2 for i in range(len(string) - 1)) for string in open("adventofcode2015python\day5\input.txt").read().strip().split("\n"))
+def part2():
+    return sum(any(string[i] == string[i + 2] for i in range(len(string) - 2)) and
+               any(string.count(string[i:i+2]) >= 2 for i in range(len(string) - 1)) for string in open("adventofcode2015python\day5\input.txt").read().strip().split("\n"))
 
 part2()
