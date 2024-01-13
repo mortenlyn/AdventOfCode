@@ -42,29 +42,34 @@ def part1():
 
 # part1()
 
-def toggle(x1, x2, y1, y2, counter):
+
+def toggle2(x1, x2, y1, y2, lights):
     for i in range(x1, x2 + 1):
         for j in range(y1, y2 + 1):
-            counter += 2
+            if (i, j) not in lights:
+                lights[(i, j)] = 2
+            else:
+                lights[(i, j)] += 2
 
-    return counter
 
-
-def turn_on(x1, x2, y1, y2, counter):
+def turn_on2(x1, x2, y1, y2, lights):
     for i in range(x1, x2 + 1):
         for j in range(y1, y2 + 1):
-            counter += 1
+            if (i, j) not in lights:
+                lights[(i, j)] = 1
+            else:
+                lights[(i, j)] += 1
 
-    return counter
 
-
-def turn_off(x1, x2, y1, y2, counter):
+def turn_off2(x1, x2, y1, y2, lights):
     for i in range(x1, x2 + 1):
         for j in range(y1, y2 + 1):
-            if counter > 0:
-                counter -= 1
+            if (i, j) in lights and lights[(i, j)] > 0:
+                lights[(i, j)] -= 1
 
-    return counter
+
+def calculate_total_intensity(lights):
+    return sum(lights.values())
 
 
 def part2():
@@ -72,26 +77,24 @@ def part2():
                 "r").read().strip().split("\n")
     data = [i.split(" ") for i in data]
 
-    counter = 0
+    lights = {}
 
     for i in data:
         if i[0] == "toggle":
             x1, y1 = map(int, i[1].split(","))
             x2, y2 = map(int, i[3].split(","))
-            counter = toggle(x1, x2, y1, y2, counter)
-            continue
-        if i[1] == "on":
+            toggle2(x1, x2, y1, y2, lights)
+        elif i[1] == "on":
             x1, y1 = map(int, i[2].split(","))
             x2, y2 = map(int, i[4].split(","))
-            counter = turn_on(x1, x2, y1, y2,  counter)
-            continue
+            turn_on2(x1, x2, y1, y2, lights)
         else:
             x1, y1 = map(int, i[2].split(","))
             x2, y2 = map(int, i[4].split(","))
-            counter = turn_off(x1, x2, y1, y2,  counter)
-            continue
+            turn_off2(x1, x2, y1, y2, lights)
 
-    print(counter)
+    total_intensity = calculate_total_intensity(lights)
+    print(total_intensity)
 
 
 part2()
