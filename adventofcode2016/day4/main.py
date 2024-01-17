@@ -32,6 +32,25 @@ def part2():
     data = open(
         "adventofcode2016/day4/input.txt").read().strip().split("\n")
 
-    
+    for line in range(len(data)):
+        data[line] = data[line].strip("]")
+        data[line] = re.split(r'-|\[', data[line])
 
-    print(data)
+    for line in range(len(data)):
+        switch = int(data[line][-2]) % 26
+
+        for word in range(len(data[line]) - 2):
+            s = ""
+            for letter in range(len(data[line][word])):
+                new_letter = ord(data[line][word][letter]) + switch
+                if ord("z") < new_letter:
+                    new_letter -= 26
+                s += chr(new_letter)
+            data[line][word] = s
+
+    for line in data:
+        if "pole" in " ".join(line):
+            print(line[-2])
+
+
+# part2()
