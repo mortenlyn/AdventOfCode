@@ -41,7 +41,7 @@ def part1():
     print(result)
 
 
-# part1()
+part1()
 
 
 def totalBags(tup, d):
