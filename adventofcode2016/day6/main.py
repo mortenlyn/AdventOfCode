@@ -42,6 +42,7 @@ def part2():
                 d[i] = [line[i]]
 
     for l in d.values():
+        print(min(set(l), key=l.count))
         result += least_common(l)
 
     print(result)
