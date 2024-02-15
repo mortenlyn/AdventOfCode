@@ -1,29 +1,12 @@
 def check(registers, register, operator, num):
-    match operator:
-        case ">":
-            if registers[register] > num:
-                return True
-            return False
-        case "<":
-            if registers[register] < num:
-                return True
-            return False
-        case "<=":
-            if registers[register] <= num:
-                return True
-            return False
-        case ">=":
-            if registers[register] >= num:
-                return True
-            return False
-        case "!=":
-            if registers[register] != num:
-                return True
-            return False
-        case "==":
-            if registers[register] == num:
-                return True
-            return False
+    return {
+        ">": lambda a, b: a > b,
+        "<": lambda a, b: a < b,
+        "<=": lambda a, b: a <= b,
+        ">=": lambda a, b: a >= b,
+        "!=": lambda a, b: a != b,
+        "==": lambda a, b: a == b,
+    }[operator](registers[register], num)
 
 
 def update(instruction, num):
