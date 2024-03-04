@@ -17,7 +17,7 @@ Each day's challenge is organized into its own folder, and labeled accordingly (
 
 ## Usage
 
-To run the solutions, simply navigate to the respective day's folder and execute the solution code using your preferred method for running [programming language] code. Make sure to provide the input files as required.
+To run the solutions, simply navigate to the respective day's folder and execute the solution code using your preferred method for running Python code (you may need to edit the input file path and the contents of the input files).
 
 ## Disclaimer
 
