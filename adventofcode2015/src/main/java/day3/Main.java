@@ -25,7 +25,7 @@ public class Main {
 
     private void updateCoordinates(String direction, int counter) {
         int x, y;
-    
+
         if (counter % 2 == 0) {
             x = this.x1;
             y = this.y1;
@@ -33,7 +33,7 @@ public class Main {
             x = this.x2;
             y = this.y2;
         }
-    
+
         switch (direction) {
             case "^":
                 y++;
@@ -51,7 +51,7 @@ public class Main {
                 // Handle invalid input
                 break;
         }
-    
+
         if (counter % 2 == 0) {
             this.x1 = x;
             this.y1 = y;
@@ -66,7 +66,7 @@ public class Main {
     public int findHouses() {
         String[] input = stringList.get(0).split("");
         int counter = 0;
-    
+
         for (int i = 0; i < input.length; i++) {
             updateCoordinates(input[i], counter);
             counter++;
@@ -83,7 +83,7 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         try {
-            main.readFile("AdventOfCode2015/day3/input.txt");
+            main.readFile("adventofcode2015/src/main/java/day3/input.txt");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
