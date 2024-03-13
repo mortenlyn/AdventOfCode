@@ -2,6 +2,12 @@
 
 This repository contains my solutions to the challenges from Advent of Code.
 
+## My current stats
+
+<!-- START STATS -->
+
+<!-- END STATS -->
+
 ## What is Advent of Code?
 
 Advent of Code is an annual online event featuring a series of programming puzzles released daily during the month of December. Participants solve these puzzles using their programming skills and compete to earn points.
@@ -21,3 +27,5 @@ To run the solutions, simply navigate to the respective day's folder and execute
 These solutions are my personal implementations for educational and recreational purposes. They may not always be the most efficient or optimal solutions. Feel free to explore and modify them according to your needs.
 
 I am still not finished with all of the challenges, so I try to solve a couple of days each week when I find the time.
+
+#### Special thanks to [runarmod](https://github.com/runarmod/) who is the creator of the script used in this repository
