@@ -5,7 +5,19 @@ This repository contains my solutions to the challenges from Advent of Code.
 ## My current stats
 
 <!-- START STATS -->
+```py
+[2023] 14*
+[2022] 12*
+[2021]  0*
+[2020] 14*
+[2019]  4*
+[2018]  0*
+[2017] 16*
+[2016] 16*
+[2015] 24*
 
+Total stars: 100*
+```
 <!-- END STATS -->
 
 ## What is Advent of Code?
