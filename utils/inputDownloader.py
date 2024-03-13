@@ -141,7 +141,7 @@ def download_input(year: int, day: int, logger: "Logging") -> None:
     cookies = {"session": COOKIE}
     USER_AGENT = (
         "ONE-TIME USAGE TO GET ALL INPUTS ON 2nd PC SINCE NO INPUTS ARE SAVED ON MY GITHUB: "
-        + "github.com/runarmod/adventofcode/blob/main/utils/inputDownloader.py by runarmod@gmail.com"
+        + "github.com/mortenlyn/adventofcode/blob/main/utils/inputDownloader.py by mortenmlyngstad@hotmail.com"
     )
     headers = {"User-Agent": USER_AGENT}
 

@@ -78,7 +78,7 @@ def update_stats() -> None:
     URL = "https://adventofcode.com/events"
     cookies = {"session": COOKIE}
     USER_AGENT = (
-        "github.com/runarmod/adventofcode by runarmod@gmail.com"
+        "github.com/mortenlyn/adventofcode by mortenmlyngstad@hotmail.com"
     )
     headers = {"User-Agent": USER_AGENT}
     page = requests.get(URL, cookies=cookies, headers=headers)

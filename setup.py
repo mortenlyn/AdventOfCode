@@ -148,7 +148,7 @@ def main():
         print(f"{Fore.GREEN}Opening VS Code!")
         os.system(f"code {path}")
 
-    USER_AGENT = "github.com/runarmod/adventofcode by runarmod@gmail.com"
+    USER_AGENT = "github.com/mortenlyn/adventofcode by mortenmlyngstad@hotmail.com"
 
     # Make inputfile
     if not os.path.exists(inputPath := os.path.join(path, "input.txt")) or args.f:
