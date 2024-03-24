@@ -35,20 +35,61 @@ class Solution:
 
             info[name] = (speed, fly_time, rest_time)
 
-        print(info)
+        max_distance = 0
+
+        for reindeer in info:
+            seconds = 2503
+            speed, fly_time, rest_time = info[reindeer]
+            distance = 0
+            while seconds > 0:
+                distance += speed * min(fly_time, seconds)
+                seconds -= fly_time
+                seconds -= rest_time
+
+            max_distance = max(max_distance, distance)
+
+        return max_distance
 
     def part2(self):
-        return None
+        info = {}
+        for line in self.data:
+            line = line.split()
+            name = line[0]
+            speed = int(line[3])
+            fly_time = int(line[6])
+            rest_time = int(line[-2])
+
+            info[name] = (speed, fly_time, rest_time)
+
+        points = {reindeer: 0 for reindeer in info}
+        current_distances = {reindeer: 0 for reindeer in info}
+        current_max_distance = 0
+
+        for i in range(0, 2504):
+            for reindeer in info:
+                speed, fly_time, rest_time = info[reindeer]
+                current_distances[reindeer] += (
+                    speed if i % (fly_time + rest_time) < fly_time else 0
+                )
+                current_max_distance = max(
+                    current_max_distance, current_distances[reindeer]
+                )
+
+            for reindeer in info:
+                if current_distances[reindeer] == current_max_distance:
+                    points[reindeer] += 1
+
+        return max(points.values())
 
 
 def main():
     start = time.perf_counter()
 
-    test = Solution(test=True)
-    test1 = test.part1()
-    test2 = test.part2()
-    print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
-    print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
+    # test = Solution(test=True)
+    # test1 = test.part1()
+    # test2 = test.part2()
+    # print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
+    # print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
 
     solution = Solution()
     part1 = solution.part1()
