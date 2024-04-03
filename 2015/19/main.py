@@ -44,26 +44,34 @@ class Solution:
 
         return len(results)
 
-    # def replace(self, index, reverse_molecule):
-    #     atom = reverse_molecule[index]
-    #     counter = index
+    def part2(self):
+        count = 0
+        current_molecule = ""
 
-    #     for key, value in self.mapping.items():
-    #         counter += 1
-    #         if atom in value:
-    #             return replace(counter, )
+        while self.molecule != "e":
+            replacement = ""
+            found = False
 
-    #     return ""
+            for i in range(len(self.molecule)):
+                next_molecule = current_molecule + self.molecule[i]
+                for key, value in self.mapping.items():
+                    if next_molecule in value:
+                        for j in range(len(value)):
+                            if value[j] == next_molecule:
+                                replacement = key
+                                current_molecule = next_molecule
+                                break
+                        break
+                    else:
+                        self.molecule[0:i] = replacement
+                        found = True
+                        break
+                if found:
+                    break
 
-
-    # def part2(self):
-    #     reverse_molecule = self.molecule[::-1]
-
-    #     for i in range(len(reverse_molecule)):
-    #         replacement = ""
-    #         for key, value in self.mapping.items():
-
-
+            count += 1
+            
+        return count
 
 
 def main():
