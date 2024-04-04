@@ -5,6 +5,7 @@ import re
 import string
 import sys
 import time
+import heapq
 from collections import defaultdict, deque
 from pprint import pprint
 
@@ -45,33 +46,28 @@ class Solution:
         return len(results)
 
     def part2(self):
-        count = 0
-        current_molecule = ""
+        queue = [(len(self.molecule), self.molecule, 0)]
 
-        while self.molecule != "e":
-            replacement = ""
-            found = False
+        while queue:
+            _, current_molecule, count = heapq.heappop(queue)
 
-            for i in range(len(self.molecule)):
-                next_molecule = current_molecule + self.molecule[i]
-                for key, value in self.mapping.items():
-                    if next_molecule in value:
-                        for j in range(len(value)):
-                            if value[j] == next_molecule:
-                                replacement = key
-                                current_molecule = next_molecule
-                                break
-                        break
-                    else:
-                        self.molecule[0:i] = replacement
-                        found = True
-                        break
-                if found:
-                    break
+            if "".join(current_molecule) == "e":
+                return count
 
-            count += 1
-            
-        return count
+            for key, values in self.mapping.items():
+                for value in values:
+                    molecule_str = "".join(current_molecule)
+                    index = molecule_str.find(value)
+                    if index != -1:
+                        new_molecule = (
+                            molecule_str[:index]
+                            + key
+                            + molecule_str[index + len(value) :]
+                        )
+                        priority = len(new_molecule)
+                        heapq.heappush(queue, (priority, list(new_molecule), count + 1))
+
+        return -1
 
 
 def main():
