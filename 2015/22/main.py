@@ -20,10 +20,66 @@ class Solution:
     def __init__(self, test=False):
         self.test = test
         filename = "testinput.txt" if self.test else "input.txt"
-        self.data = [parseLine(line) for line in open(filename).read().rstrip().split("\n")]
+        self.data = [
+            parseLine(line) for line in open(filename).read().rstrip().split("\n")
+        ]
+
+        # (Manacost, damage, heal, armor, mana-regen, effect-rounds)
+        self.spells = {
+            "magic_missile": [53, 4, 0, 0, 0, 0, False],
+            "drain": [73, 2, 2, 0, 0, 0, False],
+            "shield": [113, 0, 6, 7, 0, 6, False],
+            "poison": [173, 3, 0, 0, 0, 6, False],
+            "recharge": [229, 0, 0, 0, 101, 0, False],
+        }
+
+        self.boss_stats = {"hp": 71, "damage": 10}
+
+        self.player_stats = {"hp": 50, "mana": 500, "damage": 0, "armor": 0}
+
+    def fight(self, player_damage, player_armor):
+        for spell_name, spell_info in self.spells.items():
+            if spell_info[-1]:
+                self.player_stats["damage"] += spell_info[1]
+                self.player_stats["armor"] += spell_info[3]
+                self.player_stats["mana"] += spell_info[4]
+
+        player_turn = True
+
+        self.boss_stats["hp"] = 71
+        self.player_stats["hp"] = 50
+
+        while True:
+            if player_turn:
+                damage = player_damage
+                damage = max(damage, 1)
+                self.boss_stats["hp"] -= damage
+                if self.boss_stats["hp"] <= 0:
+                    return True
+            else:
+                damage = self.boss_stats["damage"] - player_armor
+                damage = max(damage, 1)
+                self.player_stats["hp"] -= damage
+                if self.player_stats["hp"] <= 0:
+                    return False
+
+            player_turn = not player_turn
+
+    def decrement_effect_timer(self):
+        for spell_name, spell_info in self.spells.items():
+            if spell_info[-1]:
+                self.spells[spell_name][-2] -= 1
+
+            if spell_info[-2] == 0:
+                self.spells[spell_name][-2] = False
+
+    def mana_cost(self):
+        min_mana = 0
+
+        return min_mana
 
     def part1(self):
-        return None
+        return self.mana_cost()
 
     def part2(self):
         return None
