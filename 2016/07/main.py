@@ -58,17 +58,17 @@ class Solution:
         aba = re.findall(r"(?=([a-zA-Z])([a-zA-Z])(\1))", sequence)
 
         if not aba:
-            return None
+            return []
+
         for pair in aba:
             if pair[0] == pair[1]:
-                return None
+                return []
 
         return aba
 
     def findBAB(self, sequence, aba):
         bab = re.findall(r"(?=([a-zA-Z])([a-zA-Z])(\1))", sequence)
         wanted = aba[1] + aba[0] + aba[1]
-
         for pair in bab:
             if "".join(pair) == wanted:
                 return True
@@ -80,20 +80,17 @@ class Solution:
         sequences = [re.split(r"\[|\]", line) for line in self.data]
 
         for line in sequences:
-            aba1 = self.findABA(line[0])
-            aba2 = self.findABA(line[2])
+            aba = []
+            for i, sequence in enumerate(line):
+                if i % 2 == 0:
+                    for a in self.findABA(sequence):
+                        aba.append(a)
 
-            if aba1 or aba2:
-                if aba1:
-                    for aba in aba1:
-                        if self.findBAB(line[1], aba):
+            for i, sequence in enumerate(line):
+                if i % 2 == 1:
+                    for a in aba:
+                        if self.findBAB(sequence, a):
                             result += 1
-
-                if aba2:
-                    for aba in aba2:
-                        if self.findBAB(line[1], aba):
-                            result += 1
-
         return result
 
 
@@ -105,6 +102,7 @@ def main():
     test2 = test.part2()
     print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
     print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
+
     solution = Solution()
     part1 = solution.part1()
     part2 = solution.part2()
