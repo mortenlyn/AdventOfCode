@@ -1,15 +1,8 @@
-import functools
-import itertools
-import os
 import re
-import string
 import sys
 import time
-from collections import defaultdict, deque
-from pprint import pprint
 
 sys.path.insert(0, "../../")
-from utils import copy_answer, request_submit, write_solution
 
 
 def parseLine(line):
@@ -60,11 +53,13 @@ class Solution:
         if not aba:
             return []
 
-        for pair in aba:
-            if pair[0] == pair[1]:
-                return []
+        result = []
 
-        return aba
+        for pair in aba:
+            if pair[0] != pair[1]:
+                result.append(pair)
+
+        return result
 
     def findBAB(self, sequence, aba):
         bab = re.findall(r"(?=([a-zA-Z])([a-zA-Z])(\1))", sequence)
@@ -76,9 +71,9 @@ class Solution:
 
     def part2(self):
         result = 0
+        IP_addresses = []
 
         sequences = [re.split(r"\[|\]", line) for line in self.data]
-
         for line in sequences:
             aba = []
             for i, sequence in enumerate(line):
@@ -91,17 +86,14 @@ class Solution:
                     for a in aba:
                         if self.findBAB(sequence, a):
                             result += 1
+                            IP_addresses.append(line)
+                            break
+
         return result
 
 
 def main():
     start = time.perf_counter()
-
-    test = Solution(test=True)
-    test1 = test.part1()
-    test2 = test.part2()
-    print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
-    print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
 
     solution = Solution()
     part1 = solution.part1()
@@ -110,10 +102,6 @@ def main():
     print(part2_text := f"Part 2: {part2}")
 
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
-
-    copy_answer(part1, part2)
-    write_solution(os.path.dirname(os.path.realpath(__file__)), part1_text, part2_text)
-    request_submit(2016, 7, part1, part2)
 
 
 if __name__ == "__main__":
