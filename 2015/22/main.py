@@ -37,33 +37,81 @@ class Solution:
 
         self.player_stats = {"hp": 50, "mana": 500, "damage": 0, "armor": 0}
 
-    def fight(self, player_damage, player_armor):
+    def fight(
+        self,
+        player_hp,
+        player_mana,
+        player_damage,
+        player_armor,
+        boss_hp,
+        total_mana_used,
+    ):
+        if player_mana <= 0:
+            return False
+
         for spell_name, spell_info in self.spells.items():
             if spell_info[-1]:
-                self.player_stats["damage"] += spell_info[1]
-                self.player_stats["armor"] += spell_info[3]
-                self.player_stats["mana"] += spell_info[4]
+                total_mana_used += spell_info[0]
+                player_mana -= spell_info[0]
+                player_damage += spell_info[1]
+                player_armor += spell_info[3]
+                player_mana += spell_info[4]
 
-        player_turn = True
+            self.player_attack(
+                player_hp,
+                player_mana,
+                player_damage,
+                player_armor,
+                boss_hp,
+                total_mana_used,
+            )
 
-        self.boss_stats["hp"] = 71
-        self.player_stats["hp"] = 50
+    def player_attack(
+        self,
+        player_hp,
+        player_mana,
+        player_damage,
+        player_armor,
+        boss_hp,
+        total_mana_used,
+    ):
+        boss_hp -= player_damage
+        self.decrement_effect_timer()
+        if boss_hp <= 0:
+            return True
+        else:
+            self.boss_attack(
+                player_hp,
+                player_mana,
+                player_damage,
+                player_armor,
+                boss_hp,
+                total_mana_used,
+            )
 
-        while True:
-            if player_turn:
-                damage = player_damage
-                damage = max(damage, 1)
-                self.boss_stats["hp"] -= damage
-                if self.boss_stats["hp"] <= 0:
-                    return True
-            else:
-                damage = self.boss_stats["damage"] - player_armor
-                damage = max(damage, 1)
-                self.player_stats["hp"] -= damage
-                if self.player_stats["hp"] <= 0:
-                    return False
-
-            player_turn = not player_turn
+    def boss_attack(
+        self,
+        player_hp,
+        player_mana,
+        player_damage,
+        player_armor,
+        boss_hp,
+        total_mana_used,
+    ):
+        damage = max(self.boss_stats["damage"] - player_armor, 1)
+        player_hp -= damage
+        self.decrement_effect_timer()
+        if player_hp <= 0:
+            return False
+        else:
+            self.fight(
+                player_hp,
+                player_mana,
+                player_damage,
+                player_armor,
+                boss_hp,
+                total_mana_used,
+            )
 
     def decrement_effect_timer(self):
         for spell_name, spell_info in self.spells.items():
@@ -71,15 +119,18 @@ class Solution:
                 self.spells[spell_name][-2] -= 1
 
             if spell_info[-2] == 0:
-                self.spells[spell_name][-2] = False
+                self.player_stats["damage"] -= spell_info[1]
+                self.player_stats["armor"] -= spell_info[3]
+                self.spells[spell_name][-1] = False
+                self.spells[spell_name][-2] = 6
 
-    def mana_cost(self):
+    def min_mana_cost(self):
         min_mana = 0
 
         return min_mana
 
     def part1(self):
-        return self.mana_cost()
+        return self.min_mana_cost()
 
     def part2(self):
         return None
