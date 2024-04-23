@@ -33,11 +33,11 @@ class Solution:
             "recharge": [229, 0, 0, 0, 101, 0, False],
         }
 
-        self.boss_stats = {"hp": 71, "damage": 10}
+        self.boss_stats = {"hp": 13, "damage": 8}
 
-        self.player_stats = {"hp": 50, "mana": 500, "damage": 0, "armor": 0}
+        self.player_stats = {"hp": 10, "mana": 250, "damage": 0, "armor": 0}
 
-    def fight(
+    def simulate_turn(
         self,
         player_hp,
         player_mana,
@@ -45,88 +45,121 @@ class Solution:
         player_armor,
         boss_hp,
         total_mana_used,
+        effects,
+        spell_name,
     ):
-        if player_mana <= 0:
-            return False
 
-        for spell_name, spell_info in self.spells.items():
-            if spell_info[-1]:
-                total_mana_used += spell_info[0]
-                player_mana -= spell_info[0]
-                player_damage += spell_info[1]
-                player_armor += spell_info[3]
-                player_mana += spell_info[4]
+        for effect in effects:
+            if effect["name"] == "shield":
+                player_armor = 7
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
+            elif effect["name"] == "poison":
+                boss_hp -= 3
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
+            elif effect["name"] == "recharge":
+                player_mana += 101
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
 
-            self.player_attack(
-                player_hp,
-                player_mana,
-                player_damage,
-                player_armor,
-                boss_hp,
-                total_mana_used,
-            )
+        spell_info = self.spells[spell_name]
+        player_mana -= spell_info[0]
+        total_mana_used += spell_info[0]
 
-    def player_attack(
-        self,
-        player_hp,
-        player_mana,
-        player_damage,
-        player_armor,
-        boss_hp,
-        total_mana_used,
-    ):
-        boss_hp -= player_damage
-        self.decrement_effect_timer()
-        if boss_hp <= 0:
-            return True
-        else:
-            self.boss_attack(
-                player_hp,
-                player_mana,
-                player_damage,
-                player_armor,
-                boss_hp,
-                total_mana_used,
-            )
+        if spell_info[1] > 0:
+            boss_hp -= spell_info[1]
+        if spell_info[2] > 0:
+            player_hp += spell_info[2]
+        if spell_name == "shield":
+            effects.append({"name": "shield", "timer": 6})
+        if spell_name == "poison":
+            effects.append({"name": "poison", "timer": 6})
+        if spell_name == "recharge":
+            effects.append({"name": "recharge", "timer": 5})
 
-    def boss_attack(
-        self,
-        player_hp,
-        player_mana,
-        player_damage,
-        player_armor,
-        boss_hp,
-        total_mana_used,
-    ):
+        return (
+            player_hp,
+            player_mana,
+            player_damage,
+            player_armor,
+            boss_hp,
+            total_mana_used,
+            effects,
+        )
+
+    def boss_attack(self, player_hp, player_armor):
         damage = max(self.boss_stats["damage"] - player_armor, 1)
-        player_hp -= damage
-        self.decrement_effect_timer()
-        if player_hp <= 0:
-            return False
-        else:
-            self.fight(
-                player_hp,
-                player_mana,
-                player_damage,
-                player_armor,
-                boss_hp,
-                total_mana_used,
-            )
+        return player_hp - damage
 
-    def decrement_effect_timer(self):
+    def dfs(
+        self,
+        player_hp,
+        player_mana,
+        player_damage,
+        player_armor,
+        boss_hp,
+        total_mana_used,
+        effects,
+    ):
+        if boss_hp <= 0:
+            return total_mana_used
+
+        min_mana = float("inf")
         for spell_name, spell_info in self.spells.items():
-            if spell_info[-1]:
-                self.spells[spell_name][-2] -= 1
+            if player_mana >= spell_info[0]:
+                if not any(effect["name"] == spell_name for effect in effects):
+                    (
+                        new_player_hp,
+                        new_player_mana,
+                        new_player_damage,
+                        new_player_armor,
+                        new_boss_hp,
+                        new_total_mana_used,
+                        new_effects,
+                    ) = self.simulate_turn(
+                        player_hp,
+                        player_mana,
+                        player_damage,
+                        player_armor,
+                        boss_hp,
+                        total_mana_used,
+                        effects.copy(),  # Pass a copy of the effects list
+                        spell_name,
+                    )
 
-            if spell_info[-2] == 0:
-                self.player_stats["damage"] -= spell_info[1]
-                self.player_stats["armor"] -= spell_info[3]
-                self.spells[spell_name][-1] = False
-                self.spells[spell_name][-2] = 6
+                    new_player_hp = self.boss_attack(new_player_hp, new_player_armor)
+
+                    if new_player_hp > 0:
+                        # Recur with the updated effects list
+                        min_mana = min(
+                            min_mana,
+                            self.dfs(
+                                new_player_hp,
+                                new_player_mana,
+                                new_player_damage,
+                                new_player_armor,
+                                new_boss_hp,
+                                new_total_mana_used,
+                                new_effects,  # Pass the updated effects list
+                            ),
+                        )
+
+        return min_mana
 
     def min_mana_cost(self):
-        min_mana = 0
-
+        min_mana = self.dfs(
+            self.player_stats["hp"],
+            self.player_stats["mana"],
+            self.player_stats["damage"],
+            self.player_stats["armor"],
+            self.boss_stats["hp"],
+            0,
+            [],
+        )
         return min_mana
 
     def part1(self):
@@ -144,7 +177,7 @@ def main():
     test2 = test.part2()
     print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
     print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
-
+    quit()
     solution = Solution()
     part1 = solution.part1()
     part2 = solution.part2()
