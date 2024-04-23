@@ -33,9 +33,9 @@ class Solution:
             "recharge": [229, 0, 0, 0, 101, 0, False],
         }
 
-        self.boss_stats = {"hp": 13, "damage": 8}
+        self.boss_stats = {"hp": 71, "damage": 10}
 
-        self.player_stats = {"hp": 10, "mana": 250, "damage": 0, "armor": 0}
+        self.player_stats = {"hp": 50, "mana": 500, "damage": 0, "armor": 0}
 
     def simulate_turn(
         self,
@@ -55,12 +55,12 @@ class Solution:
                 effect["timer"] -= 1
                 if effect["timer"] == 0:
                     effects.remove(effect)
-            elif effect["name"] == "poison":
+            if effect["name"] == "poison":
                 boss_hp -= 3
                 effect["timer"] -= 1
                 if effect["timer"] == 0:
                     effects.remove(effect)
-            elif effect["name"] == "recharge":
+            if effect["name"] == "recharge":
                 player_mana += 101
                 effect["timer"] -= 1
                 if effect["timer"] == 0:
@@ -91,9 +91,56 @@ class Solution:
             effects,
         )
 
-    def boss_attack(self, player_hp, player_armor):
+    def boss_attack(
+        self,
+        player_hp,
+        player_mana,
+        player_damage,
+        player_armor,
+        boss_hp,
+        total_mana_used,
+        effects,
+    ):
+        for effect in effects:
+            if effect["name"] == "shield":
+                player_armor = 7
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
+            if effect["name"] == "poison":
+                boss_hp -= 3
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
+            if effect["name"] == "recharge":
+                player_mana += 101
+                effect["timer"] -= 1
+                if effect["timer"] == 0:
+                    effects.remove(effect)
+
+        if boss_hp <= 0:
+            return (
+                True,
+                player_hp,
+                player_mana,
+                player_damage,
+                player_armor,
+                boss_hp,
+                total_mana_used,
+                effects,
+            )
+
         damage = max(self.boss_stats["damage"] - player_armor, 1)
-        return player_hp - damage
+        return (
+            False,
+            player_hp - damage,
+            player_mana,
+            player_damage,
+            player_armor,
+            boss_hp,
+            total_mana_used,
+            effects,
+        )
 
     def dfs(
         self,
@@ -105,6 +152,7 @@ class Solution:
         total_mana_used,
         effects,
     ):
+
         if boss_hp <= 0:
             return total_mana_used
 
@@ -127,14 +175,36 @@ class Solution:
                         player_armor,
                         boss_hp,
                         total_mana_used,
-                        effects.copy(),  # Pass a copy of the effects list
+                        effects.copy(),
                         spell_name,
                     )
 
-                    new_player_hp = self.boss_attack(new_player_hp, new_player_armor)
+                    if new_boss_hp <= 0:
+                        return new_total_mana_used
+
+                    (
+                        win_info,
+                        new_player_hp,
+                        new_player_mana,
+                        new_player_damage,
+                        new_player_armor,
+                        new_boss_hp,
+                        new_total_mana_used,
+                        new_effects,
+                    ) = self.boss_attack(
+                        new_player_hp,
+                        new_player_mana,
+                        new_player_damage,
+                        new_player_armor,
+                        new_boss_hp,
+                        new_total_mana_used,
+                        new_effects,
+                    )
+
+                    if win_info:
+                        return new_total_mana_used
 
                     if new_player_hp > 0:
-                        # Recur with the updated effects list
                         min_mana = min(
                             min_mana,
                             self.dfs(
@@ -144,7 +214,7 @@ class Solution:
                                 new_player_armor,
                                 new_boss_hp,
                                 new_total_mana_used,
-                                new_effects,  # Pass the updated effects list
+                                new_effects,
                             ),
                         )
 
@@ -177,7 +247,7 @@ def main():
     test2 = test.part2()
     print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
     print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
-    quit()
+    # quit()
     solution = Solution()
     part1 = solution.part1()
     part2 = solution.part2()
