@@ -16,7 +16,7 @@ class Solution:
         self.data = [
             parseLine(line) for line in open(filename).read().rstrip().split("\n")
         ]
-        
+
         self.coords = [tuple(map(int, line.split(", "))) for line in self.data]
         self.min_x = min(x for x, y in self.coords)
         self.max_x = max(x for x, y in self.coords)
