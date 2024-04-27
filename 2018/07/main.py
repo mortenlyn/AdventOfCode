@@ -23,8 +23,8 @@ class Solution:
         self.data = [
             parseLine(line) for line in open(filename).read().rstrip().split("\n")
         ]
-        self.prereq_overview = defaultdict(list)
 
+        self.prereq_overview = defaultdict(list)
         for line in self.data:
             words = line.split()
             self.prereq_overview[words[7]].append(words[1])
@@ -50,18 +50,40 @@ class Solution:
         return result
 
     def part2(self):
-        pass
+        workers = [0] * 5
+        time = 0
+
+        while self.prereq_overview:
+            for i, worker in enumerate(workers):
+                if worker == 0:
+                    next_step = min(
+                        [
+                            step
+                            for step, prereqs in self.prereq_overview.items()
+                            if len(prereqs) == 0
+                        ]
+                    )
+                    if next_step:
+                        workers[i] = ord(next_step) - 4
+                        del self.prereq_overview[next_step]
+                        for prereqs in self.prereq_overview.values():
+                            if next_step in prereqs:
+                                prereqs.remove(next_step)
+            time += 1
+            workers = [max(0, worker - 1) for worker in workers]
+
+        return time
 
 
 def main():
     start = time.perf_counter()
 
     test = Solution(test=True)
-    test1 = test.part1()
+    # test1 = test.part1()
     test2 = test.part2()
-    print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
-    print(f"(TEST) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
-    # quit()
+    # print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
+    print(f"(TESaT) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
+    quit()
     solution = Solution()
     part1 = solution.part1()
     part2 = solution.part2()
