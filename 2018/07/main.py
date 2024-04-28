@@ -1,15 +1,8 @@
-import functools
-import itertools
-import os
-import re
-import string
 import sys
 import time
-from collections import defaultdict, deque
-from pprint import pprint
+from collections import defaultdict
 
 sys.path.insert(0, "../../")
-from utils import copy_answer, request_submit, write_solution
 
 
 def parseLine(line):
@@ -32,45 +25,77 @@ class Solution:
 
     def part1(self):
         result = ""
+        prereq_overview = defaultdict(list)
 
-        while self.prereq_overview:
+        for line in self.data:
+            words = line.split()
+            prereq_overview[words[7]].append(words[1])
+            prereq_overview[words[1]]
+
+        while prereq_overview:
             next_step = min(
-                [
-                    step
-                    for step, prereqs in self.prereq_overview.items()
-                    if len(prereqs) == 0
-                ]
+                [step for step, prereqs in prereq_overview.items() if len(prereqs) == 0]
             )
             result += next_step
-            del self.prereq_overview[next_step]
-            for prereqs in self.prereq_overview.values():
+            del prereq_overview[next_step]
+            for prereqs in prereq_overview.values():
                 if next_step in prereqs:
                     prereqs.remove(next_step)
 
         return result
 
     def part2(self):
-        workers = [0] * 5
-        time = 0
+        prereq_overview = defaultdict(list)
 
-        while self.prereq_overview:
-            for i, worker in enumerate(workers):
-                if worker == 0:
-                    next_step = min(
-                        [
-                            step
-                            for step, prereqs in self.prereq_overview.items()
-                            if len(prereqs) == 0
-                        ]
+        for line in self.data:
+            words = line.split()
+            prereq_overview[words[7]].append(words[1])
+            prereq_overview[words[1]]
+
+        workers = [(None, 0)] * 5
+        time = 0
+        completed_steps = set()
+
+        while prereq_overview or any(worker[1] > 0 for worker in workers):
+            for i, (step, remaining_time) in enumerate(workers):
+                if remaining_time == 0:
+                    ready_steps = [
+                        step
+                        for step, prereqs in prereq_overview.items()
+                        if all(prereq in completed_steps for prereq in prereqs)
+                    ]
+                    if not ready_steps:
+                        continue
+                    next_step = min(ready_steps)
+                    workers[i] = (
+                        next_step,
+                        ord(next_step) - 4,
                     )
-                    if next_step:
-                        workers[i] = ord(next_step) - 4
-                        del self.prereq_overview[next_step]
-                        for prereqs in self.prereq_overview.values():
-                            if next_step in prereqs:
-                                prereqs.remove(next_step)
+                    del prereq_overview[next_step]
+
+            for i, (step, remaining_time) in enumerate(workers):
+                if remaining_time == 0:
+                    ready_steps = [
+                        step
+                        for step, prereqs in prereq_overview.items()
+                        if all(prereq in completed_steps for prereq in prereqs)
+                    ]
+                    if not ready_steps:
+                        continue
+                    next_step = min(ready_steps)
+                    workers[i] = (
+                        next_step,
+                        ord(next_step) - 4,
+                    )
+                    del prereq_overview[next_step]
+                else:
+                    workers[i] = (
+                        step,
+                        remaining_time - 1,
+                    )
+                    if remaining_time == 1:
+                        completed_steps.add(step)
             time += 1
-            workers = [max(0, worker - 1) for worker in workers]
 
         return time
 
@@ -78,12 +103,6 @@ class Solution:
 def main():
     start = time.perf_counter()
 
-    test = Solution(test=True)
-    # test1 = test.part1()
-    test2 = test.part2()
-    # print(f"(TEST) Part 1: {test1}, \t{'correct :)' if test1 == None else 'wrong :('}")
-    print(f"(TESaT) Part 2: {test2}, \t{'correct :)' if test2 == None else 'wrong :('}")
-    quit()
     solution = Solution()
     part1 = solution.part1()
     part2 = solution.part2()
@@ -91,10 +110,6 @@ def main():
     print(part2_text := f"Part 2: {part2}")
 
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
-
-    copy_answer(part1, part2)
-    write_solution(os.path.dirname(os.path.realpath(__file__)), part1_text, part2_text)
-    request_submit(2018, 7, None, part2)
 
 
 if __name__ == "__main__":
