@@ -41,10 +41,27 @@ class Solution:
         return metadata
 
     def find_value(self, data):
-        pass
+        children = data.pop(0)
+        metadata_count = data.pop(0)
+        children_values = []
+        for _ in range(children):
+            children_values.append(self.find_value(data))
+        metadata = 0
+        for _ in range(metadata_count):
+            metadata_index = data.pop(0)
+            if children == 0:
+                metadata += metadata_index
+            else:
+                if metadata_index <= len(children_values):
+                    metadata += children_values[metadata_index - 1]
+
+        return metadata
 
     def part2(self):
-        return None
+        node_info = list(map(int, self.data))
+        value = self.find_value(node_info)
+
+        return value
 
 
 def main():
