@@ -49,7 +49,7 @@ class Solution:
         return self.simulate_pick_number(bingo_boards, random_nums, [])
 
     def simulate_pick_number_win_last(
-        self, boards, nums, picked_nums, winning_boards, target_length
+        self, boards, nums, target_length, picked_nums=[], winning_boards=[]
     ):
         updated_boards = boards.copy()
 
@@ -91,7 +91,7 @@ class Solution:
         picked_nums.append(nums.pop(0))
 
         return self.simulate_pick_number_win_last(
-            updated_boards, nums, picked_nums, winning_boards, target_length
+            updated_boards, nums, target_length, picked_nums, winning_boards
         )
 
     def part2(self):
@@ -102,7 +102,7 @@ class Solution:
             bingo_boards.append(board.strip().split("\n"))
 
         return self.simulate_pick_number_win_last(
-            bingo_boards, random_nums, [], [], len(bingo_boards)
+            bingo_boards, random_nums, len(bingo_boards)
         )
 
 
