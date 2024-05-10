@@ -9,14 +9,14 @@ This repository contains my solutions to the challenges from Advent of Code.
 [2023] 14*
 [2022] 14*
 [2021]  8*
-[2020] 18*
+[2020] 20*
 [2019]  6*
 [2018] 16*
 [2017] 16*
 [2016] 18*
 [2015] 42*
 
-Total stars: 152*
+Total stars: 154*
 ```
 <!-- END STATS -->
 
