@@ -8,7 +8,7 @@ This repository contains my solutions to the challenges from Advent of Code.
 ```py
 [2023] 14*
 [2022] 14*
-[2021] 10*
+[2021] 12*
 [2020] 20*
 [2019]  6*
 [2018] 16*
@@ -16,7 +16,7 @@ This repository contains my solutions to the challenges from Advent of Code.
 [2016] 18*
 [2015] 42*
 
-Total stars: 156*
+Total stars: 158*
 ```
 <!-- END STATS -->
 
