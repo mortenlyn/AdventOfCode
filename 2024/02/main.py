@@ -30,7 +30,7 @@ class Solution:
         return True
 
     def part1(self):
-        return sum(self.valid(elem) for elem in self.info)
+        return sum(map(self.valid, self.info))
 
     def part2(self):
         safe = 0
