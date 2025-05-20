@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/user/2dd907da-de6a-4666-be49-93df180978c4/project/e18e0bb1-3b94-45e2-8531-be4374e99ac6.svg)](https://wakatime.com/badge/user/2dd907da-de6a-4666-be49-93df180978c4/project/e18e0bb1-3b94-45e2-8531-be4374e99ac6)
+
 # Advent of Code Solutions
 
 This repository contains my solutions to the challenges from Advent of Code.
